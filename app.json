@@ -1,0 +1,55 @@
+﻿{
+    "expo":  {
+                 "name":  "Suki",
+                 "slug":  "suki-ai",
+                 "version":  "0.4.0",
+                 "orientation":  "portrait",
+                 "scheme":  "sukiai",
+                 "userInterfaceStyle":  "dark",
+                 "plugins":  [
+                                 "expo-router",
+                                 "expo-sqlite",
+                                 "expo-image-picker",
+                                 [
+                                     "expo-speech-recognition",
+                                     {
+                                         "microphonePermission":  "Allow Suki to listen to your voice commands."
+                                     }
+                                 ]
+                             ],
+                 "experiments":  {
+                                     "typedRoutes":  true
+                                 },
+                 "android":  {
+                                 "package":  "com.sukiai.app",
+                                 "permissions":  [
+                                                     "android.permission.RECORD_AUDIO",
+                                                     "android.permission.CAMERA"
+                                                 ],
+                                 "adaptiveIcon":  {
+                                                      "foregroundImage":  "./assets/images/android-icon-foreground.png",
+                                                      "backgroundImage":  "./assets/images/android-icon-background.png",
+                                                      "monochromeImage":  "./assets/images/android-icon-monochrome.png",
+                                                      "backgroundColor":  "#087FCB"
+                                                  }
+                             },
+                 "ios":  {
+                             "supportsTablet":  true
+                         },
+                 "web":  {
+                             "bundler":  "metro",
+                             "output":  "static",
+                             "favicon":  "./assets/images/favicon.png"
+                         },
+                 "assetBundlePatterns":  [
+                                             "**/*"
+                                         ],
+                 "icon":  "./assets/images/icon.png",
+                 "splash":  {
+                                "image":  "./assets/images/splash-icon.png",
+                                "imageWidth":  250,
+                                "resizeMode":  "contain",
+                                "backgroundColor":  "#081B35"
+                            }
+             }
+}
