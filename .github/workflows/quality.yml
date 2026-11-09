@@ -1,0 +1,38 @@
+name: Suki quality checks
+
+on:
+  push:
+    branches:
+      - main
+      - "review/**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: TypeScript validation
+        run: npm run typecheck
+
+      - name: Local command regression tests
+        run: npm run test:local
+
+      - name: API URL regression tests
+        run: npm run test:api-url
