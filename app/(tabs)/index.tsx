@@ -606,37 +606,38 @@ ${question}`, sender: 'user' };
         content: item.text,
       }));
 
+      if (!SUKI_CHAT_URL) {
+        appendLocalReply('Online chat is not configured yet. Set EXPO_PUBLIC_API_URL to your deployed HTTPS backend endpoint in mobile/.env and rebuild the app. Do not use a laptop LAN address in a distributed APK. Your offline records still work.');
+        return;
+      }
+
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 45000);
-      let response: Response;
       try {
-        if (!SUKI_CHAT_URL) {
-          appendLocalReply('Online chat is not configured yet. Set EXPO_PUBLIC_API_URL to your deployed HTTPS backend endpoint in mobile/.env and rebuild the app. Do not use a laptop LAN address in a distributed APK. Your offline records still work.');
-          return;
-        }
-        response = await fetch(SUKI_CHAT_URL, {
-        signal: controller.signal,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: trimmed, history }),
+        const response = await fetch(SUKI_CHAT_URL, {
+          signal: controller.signal,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: trimmed, history }),
         });
+
+        // Keep the timeout active while reading the response body too.
+        const data = await response.json().catch(() => null) as
+          | { reply?: string; detail?: string }
+          | null;
+
+        if (!response.ok) {
+          throw new Error(data?.detail || `Server returned HTTP ${response.status}`);
+        }
+
+        if (typeof data?.reply !== 'string' || !data.reply.trim()) {
+          throw new Error('Suki returned an empty response.');
+        }
+
+        appendLocalReply(data.reply.trim());
       } finally {
         clearTimeout(timeout);
       }
-
-      const data = await response.json().catch(() => null) as
-        | { reply?: string; detail?: string }
-        | null;
-
-      if (!response.ok) {
-        throw new Error(data?.detail || `Server returned HTTP ${response.status}`);
-      }
-
-      if (typeof data?.reply !== 'string' || !data.reply.trim()) {
-        throw new Error('Suki returned an empty response.');
-      }
-
-      appendLocalReply(data.reply.trim());
     } catch (error) {
       console.error('Suki request error:', error);
       const detail = error instanceof Error ? error.message : 'Unknown error.';
