@@ -73,7 +73,7 @@ Clone the repository:
 ```bash
 git clone https://github.com/Santhosh28-Lancer/Suki---personal-assistant.git
 cd Suki---personal-assistant
-npm install
+npm ci
 ```
 
 ### Start the development server
@@ -94,6 +94,8 @@ This project includes native Android code. Use a development build or a locally 
 
 ```bash
 npm run typecheck
+npm run test:local
+npm run test:api-url
 ```
 
 ## 🌐 Optional online AI and PDF analysis
